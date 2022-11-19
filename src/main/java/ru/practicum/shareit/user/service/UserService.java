@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final Validator<User> userValidator;
+    private final Validator<UserDto> userDtoValidator;
 
     @Autowired
-    public UserService(UserRepository userRepository, Validator<User> userValidator) {
+    public UserService(UserRepository userRepository, Validator<UserDto> userDtoValidator) {
         this.userRepository = userRepository;
-        this.userValidator = userValidator;
+        this.userDtoValidator = userDtoValidator;
     }
 
     public UserDto createUser(UserDto userDto) {
         User user = new User();
         UserMapper.toUser(user, userDto);
-        userValidator.check(user);
+        userDtoValidator.check(userDto);
         if (userRepository.checkEmail(user)) {
             throw new ResourceAlreadyExistsException("Resource already exists");
         }
@@ -48,8 +48,8 @@ public class UserService {
             if (userRepository.checkEmail(user)) {
                 throw new ResourceAlreadyExistsException("Resource already exists");
             }
+            userDtoValidator.check(UserMapper.toUserDto(user));
             updatedUser = userRepository.updateUser(user);
-            userValidator.check(updatedUser);
             log.info("User updated" + updatedUser);
         } else {
             throw new ResourceNotFoundException("User not found" + id);

@@ -19,7 +19,7 @@ public class ItemController {
 
     @GetMapping()
     public List<ItemDto> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getAllItems(userId);
+        return itemService.getAllItemsByUserId(userId);
     }
 
     @PostMapping()
@@ -40,7 +40,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam(name = "text") String text) {
-        return itemService.searchItems(text);
+        return itemService.searchItemsByDescription(text);
     }
 
     @DeleteMapping("/{itemId}")

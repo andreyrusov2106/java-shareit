@@ -22,20 +22,19 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final Validator<Item> itemValidator;
+    private final Validator<ItemDto> itemDtoValidator;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, Validator<Item> itemValidator, UserRepository userRepository) {
+    public ItemService(ItemRepository itemRepository, Validator<ItemDto> itemDtoValidator, UserRepository userRepository) {
         this.itemRepository = itemRepository;
-        this.itemValidator = itemValidator;
+        this.itemDtoValidator = itemDtoValidator;
         this.userRepository = userRepository;
     }
 
     public ItemDto createItem(ItemDto itemDto, Long userId) {
         Item newItem = new Item();
-        newItem.setId(userId);
         ItemMapper.toItem(newItem, itemDto);
-        itemValidator.check(newItem);
+        itemDtoValidator.check(itemDto);
         User owner = userRepository.getUser(userId);
         if (owner == null) {
             throw new ResourceNotFoundException(String.format("User with id=%d not found", userId));
@@ -55,8 +54,8 @@ public class ItemService {
                 throw new ResourceNotFoundException("User is not owner of item!");
             }
             ItemMapper.toItem(item, itemDto);
+            itemDtoValidator.check(ItemMapper.toItemDto(item));
             updatedItem = itemRepository.updateItem(item);
-            itemValidator.check(updatedItem);
             log.info("User updated" + updatedItem);
         } else {
             throw new ResourceNotFoundException("Item not found" + userId);
@@ -64,7 +63,7 @@ public class ItemService {
         return ItemMapper.toItemDto(updatedItem);
     }
 
-    public List<ItemDto> getAllItems(Long userId) {
+    public List<ItemDto> getAllItemsByUserId(Long userId) {
         return itemRepository.getAllItems()
                 .stream()
                 .filter(i -> Objects.equals(i.getOwner().getId(), userId))
@@ -80,8 +79,10 @@ public class ItemService {
         }
     }
 
-    public List<ItemDto> searchItems(String text) {
-        if (text.isBlank()) return new ArrayList<>();
+    public List<ItemDto> searchItemsByDescription(String text) {
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
         return itemRepository.getAllItems()
                 .stream()
                 .filter(i -> i.getDescription().toLowerCase().contains(text.toLowerCase()) && i.getAvailable())

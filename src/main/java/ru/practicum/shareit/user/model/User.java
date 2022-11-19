@@ -2,8 +2,6 @@ package ru.practicum.shareit.user.model;
 
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 
 @Data
 @AllArgsConstructor
@@ -13,8 +11,6 @@ import javax.validation.constraints.NotEmpty;
 public class User {
     private Long id;
     private String name;
-    @Email
-    @NotEmpty
     private String email;
 
     public User(User newUser) {
