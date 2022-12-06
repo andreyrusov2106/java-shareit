@@ -32,10 +32,6 @@ public class Item {
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private ItemRequest request;
 
-    public void Item() {
-
-    }
-
     public Item(Item newItem) {
         this.setId(newItem.getId());
         this.setName(newItem.getName());
