@@ -10,13 +10,14 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(item.getOwner())
-                .request(item.getRequest())
+                //.owner(item.getOwner())
+                //.request(item.getRequest())
                 .build();
 
     }
 
     public static void toItem(Item item, ItemDto itemDto) {
+        if (itemDto.getId() != null) item.setId(itemDto.getId());
         if (itemDto.getName() != null) item.setName(itemDto.getName());
         if (itemDto.getDescription() != null) item.setDescription(itemDto.getDescription());
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
