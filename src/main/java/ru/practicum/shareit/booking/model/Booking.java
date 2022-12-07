@@ -24,12 +24,10 @@ public class Booking {
     @Column(name = "end_date")
     private LocalDateTime end;
     @OneToOne()
-    @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item;
     @OneToOne()
-    @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     public Booking(Booking newBooking) {

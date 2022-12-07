@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional()
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
@@ -39,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final Validator<ItemDto> itemDtoValidator;
+    private final Validator<CommentDto> commentDtoValidator;
 
     @Override
     public ItemDto createItem(ItemDto itemDto, Long userId) {
@@ -72,9 +71,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemsByUserId(Long userId) {
-        return itemRepository.findAll()
+        return itemRepository.findAllByOwnerId(userId)
                 .stream()
-                .filter(i -> Objects.equals(i.getOwner().getId(), userId))
                 .map(ItemMapper::toItemDto)
                 .map(this::addBookingsToItem)
                 .map(this::addCommentsToItem)
@@ -145,6 +143,7 @@ public class ItemServiceImpl implements ItemService {
         Comment newComment = new Comment();
         CommentMapper.toComment(newComment, commentDto);
         newComment.setCreated(LocalDateTime.now());
+        commentDtoValidator.check(commentDto);
         var owner = userRepository.findById(userId);
         if (owner.isEmpty()) {
             throw new ResourceNotFoundException(String.format("User with id=%d not found", userId));

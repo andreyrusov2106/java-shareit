@@ -22,28 +22,28 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerAndStatusIs(User booker, Status status);
 
     @Query(" select b from Booking b " +
-            "where b.item.owner.id =?1")
+            "where b.item.owner.id =:ownerId")
     List<Booking> findAllByOwnerOfItem(Long ownerId);
 
     @Query(" select b from Booking b " +
-            "where (b.item.owner =?1 " +
-            "and ( b.start < ?2 and b.end>?2))")
-    List<Booking> findAllByOwnerOfItemAndStartIsBeforeAndEndIsAfter(User owner, LocalDateTime dateTime1);
+            "where (b.item.owner =:owner " +
+            "and (:dateTime between b.start and b.end))")
+    List<Booking> findAllByOwnerOfItemAndStartIsBeforeAndEndIsAfter(User owner, LocalDateTime dateTime);
 
     @Query(" select b from Booking b " +
-            "where b.item.owner.id =?1 " +
-            " and b.end<?2 " +
-            "and b.status=?3")
-    List<Booking> findAllByOwnerOfItemAndEndIsBeforeAndStatusIs(Long ownerId, LocalDateTime dateTime1, Status status);
+            "where b.item.owner.id =:ownerId " +
+            " and b.end<:dateTime " +
+            "and b.status=:status")
+    List<Booking> findAllByOwnerOfItemAndEndIsBeforeAndStatusIs(Long ownerId, LocalDateTime dateTime, Status status);
 
     @Query(" select b from Booking b " +
-            "where b.item.owner.id =?1 " +
-            "and b.start>?2")
-    List<Booking> findAllByOwnerOfItemAndStartIsAfter(Long ownerId, LocalDateTime dateTime1);
+            "where b.item.owner.id =:ownerId " +
+            "and b.start>:dateTime")
+    List<Booking> findAllByOwnerOfItemAndStartIsAfter(Long ownerId, LocalDateTime dateTime);
 
     @Query(" select b from Booking b " +
-            "where b.item.owner.id =?1 " +
-            "and b.status = ?2")
+            "where b.item.owner.id =:ownerId " +
+            "and b.status = :status")
     List<Booking> findAllByOwnerOfItemAndStatusIs(Long ownerId, Status status);
 
     Booking findTop1ByItemAndEndIsBeforeOrderByEndDesc(Item item, LocalDateTime now);

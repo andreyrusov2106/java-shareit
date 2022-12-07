@@ -26,10 +26,8 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
     @OneToOne()
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
     @OneToOne()
-    @JoinColumn(name = "request_id", referencedColumnName = "id")
     private ItemRequest request;
 
     public Item(Item newItem) {
