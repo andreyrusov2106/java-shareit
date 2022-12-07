@@ -11,8 +11,6 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
-@Getter
-@Setter
 @ToString
 
 public class User {
