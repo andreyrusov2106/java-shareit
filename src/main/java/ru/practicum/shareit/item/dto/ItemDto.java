@@ -29,4 +29,7 @@ public class ItemDto {
     @NonFinal
     @Setter
     List<CommentDto> comments;
+    @NonFinal
+    @Setter
+    Long requestId;
 }

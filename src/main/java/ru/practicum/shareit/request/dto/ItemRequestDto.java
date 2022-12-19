@@ -1,7 +1,25 @@
 package ru.practicum.shareit.request.dto;
 
-/**
- * TODO Sprint add-item-requests.
- */
+import lombok.Builder;
+import lombok.Setter;
+import lombok.Value;
+import lombok.experimental.NonFinal;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.model.User;
+
+import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Builder
+@Value
 public class ItemRequestDto {
+    Long id;
+    @NotEmpty
+    String description;
+    User requester;
+    LocalDateTime created;
+    @NonFinal
+    @Setter
+    List<ItemDto> items;
 }
