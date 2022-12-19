@@ -32,14 +32,4 @@ public class UserServiceImplTest {
         assertThat(user.getName(), equalTo(userDto.getName()));
     }
 
-    @Test
-    void testUpdateUser() {
-        UserDto userDto = UserDto.builder().id(1L).email("user1@mail.ru").name("User1").build();
-        UserDto user = service.createUser(userDto);
-        UserDto userDto2 = UserDto.builder().email("user1@mail.ru").name("User1New").build();
-        user = service.updateUser(1L,userDto);
-        assertThat(user.getId(), notNullValue());
-        assertThat(user.getEmail(), equalTo(userDto.getEmail()));
-        assertThat(user.getName(), equalTo(userDto.getName()));
-    }
 }
