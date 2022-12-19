@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -13,15 +11,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-import javax.persistence.EntityManager;
 
-@Transactional
-@SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@TestPropertySource(properties = {"db.name=test"})
+@SpringBootTest(
+        properties = "db.name=test1",
+        webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserServiceImplTest {
     private final UserService service;
-    private final EntityManager em;
 
     @Test
     void testSaveUser() {
@@ -32,4 +28,12 @@ public class UserServiceImplTest {
         assertThat(user.getName(), equalTo(userDto.getName()));
     }
 
+    @Test
+    void testUpdateUser() {
+        UserDto userDto2 = UserDto.builder().email("user1@mail.ru").name("User1New").build();
+        UserDto user = service.updateUser(1L, userDto2);
+        assertThat(user.getId(), notNullValue());
+        assertThat(user.getEmail(), equalTo(userDto2.getEmail()));
+        assertThat(user.getName(), equalTo(userDto2.getName()));
+    }
 }
