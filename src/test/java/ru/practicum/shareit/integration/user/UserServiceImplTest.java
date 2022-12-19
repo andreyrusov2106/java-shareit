@@ -59,6 +59,7 @@ public class UserServiceImplTest {
         assertThat(user.getEmail(), equalTo(userDto2.getEmail()));
         assertThat(user.getName(), equalTo(userDto2.getName()));
     }
+
     @Test
     @Order(5)
     void testRemoveUser() {
