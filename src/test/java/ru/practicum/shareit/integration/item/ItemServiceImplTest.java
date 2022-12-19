@@ -25,7 +25,7 @@ public class ItemServiceImplTest {
     @Order(1)
     void testSaveItem() {
         UserDto userDto = UserDto.builder().id(1L).email("user1@mail.ru").name("User1").build();
-        UserDto user = userService.createUser(userDto);
+        UserDto user1 = userService.createUser(userDto);
         ItemDto itemDto = ItemDto.builder().description("Item1desc").name("Item1").available(true).build();
         ItemDto item = itemService.createItem(itemDto, 1L);
         assertThat(item.getId(), notNullValue());
