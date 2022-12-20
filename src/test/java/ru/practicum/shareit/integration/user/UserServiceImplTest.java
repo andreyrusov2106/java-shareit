@@ -1,10 +1,11 @@
 package ru.practicum.shareit.integration.user;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.annotation.Order;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -21,12 +22,12 @@ import static org.hamcrest.Matchers.notNullValue;
         properties = "db.name=test1",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class UserServiceImplTest {
     private final UserService service;
 
     @Test
-    @Order(1)
-    void testSaveUser() {
+    void test1SaveUser() {
         UserDto userDto = UserDto.builder().id(1L).email("user1@mail.ru").name("User1").build();
         UserDto user = service.createUser(userDto);
         assertThat(user.getId(), notNullValue());
@@ -35,8 +36,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @Order(2)
-    void testUpdateUser() {
+    void test2UpdateUser() {
         UserDto userDto2 = UserDto.builder().email("user1@mail.ru").name("User1New").build();
         UserDto user = service.updateUser(1L, userDto2);
         assertThat(user.getId(), notNullValue());
@@ -45,16 +45,14 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @Order(3)
-    void testGetAllUsers() {
+    void test3GetAllUsers() {
         List<UserDto> users = service.getAllUsers();
         assertThat(users.size(), equalTo(1));
 
     }
 
     @Test
-    @Order(4)
-    void testGetUser() {
+    void test4GetUser() {
         UserDto userDto2 = UserDto.builder().email("user1@mail.ru").name("User1New").build();
         UserDto user = service.getUser(1L);
         assertThat(user.getId(), notNullValue());
@@ -63,8 +61,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    @Order(5)
-    void testRemoveUser() {
+    void test5RemoveUser() {
         service.removeUser(1L);
         List<UserDto> users = service.getAllUsers();
         assertThat(users.size(), equalTo(0));
