@@ -1,7 +1,9 @@
 package ru.practicum.shareit.integration.request;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -22,6 +24,7 @@ import static org.hamcrest.Matchers.notNullValue;
         properties = "db.name=test1",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class RequestServiceImplTest {
     private final ItemService itemService;
     private final UserService userService;
