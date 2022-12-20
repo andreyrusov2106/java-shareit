@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "requests", schema = "public")
 public class ItemRequest {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     @OneToOne()
