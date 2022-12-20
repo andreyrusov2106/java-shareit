@@ -2,6 +2,7 @@ package ru.practicum.shareit.integration.item;
 
 import lombok.RequiredArgsConstructor;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.ResourceNotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
@@ -104,5 +106,23 @@ public class ItemServiceImplTest {
         itemService.removeItem(2L);
         List<ItemDto> items = itemService.getAllItemsByUserId(2L);
         assertThat(items.size(), equalTo(0));
+    }
+
+    @Test
+    void test7GetWrongItem() {
+
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> itemService.getItem(99L, 1L));
+        Assertions.assertEquals("Item with id not found99", exception.getMessage());
+    }
+
+    @Test
+    void test8GetItemWrongUser() {
+
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> itemService.getItem(1L, 99L));
+        Assertions.assertEquals("User not found", exception.getMessage());
     }
 }

@@ -1,15 +1,21 @@
 package ru.practicum.shareit.integration.user;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.exceptions.ResourceNotFoundException;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -61,9 +67,57 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void test5RemoveUser() {
+    void test5SaveUserWithDuplicateEmail() {
+        UserDto userDto = UserDto.builder().email("user1@mail.ru").name("User1").build();
+        final DataIntegrityViolationException exception = Assertions.assertThrows(
+                DataIntegrityViolationException.class,
+                () -> service.createUser(userDto));
+
+        Assertions.assertEquals("could not execute statement; SQL [n/a]; " +
+                "constraint [null]; nested exception " +
+                "is org.hibernate.exception.ConstraintViolationException: " +
+                "could not execute statement", exception.getMessage());
+    }
+
+    @Test
+    void test6RemoveUser() {
         service.removeUser(1L);
         List<UserDto> users = service.getAllUsers();
         assertThat(users.size(), equalTo(0));
     }
+
+    @Test
+    void test6CreateUserWrongEmail() {
+        UserDto userDto = UserDto.builder().email("").name("User1").build();
+        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+                .description("").build();
+        final ConstraintViolationException exception = Assertions.assertThrows(
+                ConstraintViolationException.class,
+                () -> service.createUser(userDto));
+
+        Assertions.assertEquals("check.t.email: must not be empty", exception.getMessage());
+    }
+
+    @Test
+    void test7UpdateWrongUser() {
+        UserDto userDto = UserDto.builder().email("").name("User1").build();
+        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+                .description("").build();
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> service.updateUser(99L, userDto));
+
+        Assertions.assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void test8GetWrongUser() {
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> service.getUser(99L));
+
+        Assertions.assertEquals("User not found", exception.getMessage());
+    }
+
+
 }

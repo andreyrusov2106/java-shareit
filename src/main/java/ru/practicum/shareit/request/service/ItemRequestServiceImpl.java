@@ -82,7 +82,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllItemRequestWithPagination(Long userId, Integer from, Integer size) {
         if (from != null && size != null) {
-            if (size < 0 || from < 0) {
+            if (size <= 0 || from < 0) {
                 throw new BadRequestException("Incorrect size or from");
             }
         } else {
