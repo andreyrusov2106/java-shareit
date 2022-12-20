@@ -117,12 +117,4 @@ public class ItemServiceImplTest {
         Assertions.assertEquals("Item with id not found99", exception.getMessage());
     }
 
-    @Test
-    void test8GetItemWrongUser() {
-
-        final ResourceNotFoundException exception = Assertions.assertThrows(
-                ResourceNotFoundException.class,
-                () -> itemService.getItem(1L, 99L));
-        Assertions.assertEquals("User not found", exception.getMessage());
-    }
 }
