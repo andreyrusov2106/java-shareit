@@ -28,7 +28,6 @@ public class Item {
     @OneToOne()
     private User owner;
     @ManyToOne()
-    @JoinColumn(name = "item_request_id")
     private ItemRequest request;
 
     public Item(Item newItem) {

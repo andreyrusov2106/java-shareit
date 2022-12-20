@@ -26,6 +26,5 @@ public class ItemRequest {
     private User requester;
     private LocalDateTime created;
     @OneToMany()
-    @JoinColumn(name = "items_id")
     private List<Item> items;
 }
