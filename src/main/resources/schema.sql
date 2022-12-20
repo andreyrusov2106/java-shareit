@@ -4,6 +4,7 @@ DROP table IF EXISTS PUBLIC.bookings cascade;
 DROP table IF EXISTS PUBLIC.comments cascade;
 drop table IF EXISTS PUBLIC.items_comments cascade;
 drop table IF EXISTS PUBLIC.requests cascade;
+drop table IF EXISTS PUBLIC.requests_items cascade;
 CREATE TABLE IF NOT EXISTS PUBLIC.users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_name varchar(300),
