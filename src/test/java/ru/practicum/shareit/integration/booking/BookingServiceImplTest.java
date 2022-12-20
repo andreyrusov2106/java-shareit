@@ -64,4 +64,12 @@ public class BookingServiceImplTest {
         assertThat(bookingDtonew.getBooker(), equalTo(bookingDto.getBooker()));
         assertThat(bookingDtonew.getItem(), equalTo(bookingDto.getItem()));
     }
+
+    @Test
+    void test2GetBooking() {
+        BookingDto bookingDto = bookingService.getBooking(1L, 1L);
+        assertThat(bookingDto.getItem().getId(), equalTo(1L));
+        assertThat(bookingDto.getBooker().getId(), equalTo(2L));
+
+    }
 }
