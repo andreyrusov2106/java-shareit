@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS items (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     item_name varchar(300),
     description varchar(3000),
-    is_aviable bit,
+    is_available bit,
     owner_id BIGINT,
     request_id BIGINT,
     CONSTRAINT fk_items_to_users FOREIGN KEY(owner_id) REFERENCES users(id),

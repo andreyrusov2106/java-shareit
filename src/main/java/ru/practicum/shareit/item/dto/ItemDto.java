@@ -8,17 +8,25 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 @Builder
 @Value
 public class ItemDto {
+    @NonFinal
     Long id;
     @NotNull
     @NotBlank
+    @NonFinal
     String name;
     @NotNull
     @NotBlank
+    @NonFinal
     String description;
     @NotNull
+    @NonFinal
     Boolean available;
     @NonFinal
     @Setter
