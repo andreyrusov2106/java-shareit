@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +53,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void saveNewItem() throws Exception {
+    void testCreateItem() throws Exception {
         when(itemService.createItem(any(), any()))
                 .thenReturn(itemDto);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -65,6 +67,35 @@ public class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(itemDto.getName()), String.class))
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription()), String.class));
+    }
+
+    @Test
+    void testGetItem() throws Exception {
+        when(itemService.getItem(any(), any()))
+                .thenReturn(itemDto);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("X-Sharer-User-Id", "1");
+        mvc.perform(get("/items/1")
+                        .headers(new HttpHeaders(params))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(itemDto.getName()), String.class))
+                .andExpect(jsonPath("$.description", is(itemDto.getDescription()), String.class));
+    }
+
+    @Test
+    void testDeleteItem() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("X-Sharer-User-Id", "1");
+        mvc.perform(delete("/items/1")
+                        .content(mapper.writeValueAsString(itemDto))
+                        .headers(new HttpHeaders(params))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
 }

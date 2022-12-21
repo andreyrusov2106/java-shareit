@@ -89,20 +89,56 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void test5getPastBookingsByState() {
+    void test5getPastBookingsByStatePast() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.PAST.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(0));
     }
 
     @Test
-    void test6getAllBookingsByStateAndOwner() {
+    void test6getPastBookingsByStateCurrent() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.CURRENT.name(), 0, 1);
+        assertThat(bookingDtos.size(), equalTo(0));
+    }
+
+    @Test
+    void test7getPastBookingsByStateRejected() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.REJECTED.name(), 0, 1);
+        assertThat(bookingDtos.size(), equalTo(0));
+    }
+
+    @Test
+    void test8getPastBookingsByStateWaitind() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.WAITING.name(), 0, 1);
+        assertThat(bookingDtos.size(), equalTo(0));
+    }
+
+    @Test
+    void test9getAllBookingsByStateAndOwner() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.ALL.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(1));
     }
 
     @Test
-    void test6getPastBookingsByStateAndOwner() {
+    void test91getPastBookingsByStateAndOwnerPast() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.PAST.name(), 0, 1);
+        assertThat(bookingDtos.size(), equalTo(0));
+    }
+
+    @Test
+    void test92getPastBookingsByStateAndOwnerCurrent() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.CURRENT.name(), 0, 1);
+        assertThat(bookingDtos.size(), equalTo(0));
+    }
+
+    @Test
+    void test93getPastBookingsByStateAndOwnerWaiting() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.WAITING.name(), 0, 1);
+        assertThat(bookingDtos.size(), equalTo(0));
+    }
+
+    @Test
+    void test94getPastBookingsByStateAndOwnerRejected() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.REJECTED.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(0));
     }
 }
