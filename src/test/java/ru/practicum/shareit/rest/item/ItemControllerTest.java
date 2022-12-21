@@ -1,4 +1,5 @@
 package ru.practicum.shareit.rest.item;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,42 +28,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 public class ItemControllerTest {
-        @Mock
-        private ItemService itemService;
-        @InjectMocks
-        private ItemController itemController;
-        private final ObjectMapper mapper = new ObjectMapper();
+    @Mock
+    private ItemService itemService;
+    @InjectMocks
+    private ItemController itemController;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-        private MockMvc mvc;
+    private MockMvc mvc;
 
-        private ItemDto itemDto;
+    private ItemDto itemDto;
 
-        @BeforeEach
-        void setUp() {
-            mvc = MockMvcBuilders
-                    .standaloneSetup(itemController)
-                    .build();
-            itemDto = ItemDto.builder()
-                    .name("Item1")
-                    .description("desc1")
-                    .available(true)
-                    .build();
-        }
+    @BeforeEach
+    void setUp() {
+        mvc = MockMvcBuilders
+                .standaloneSetup(itemController)
+                .build();
+        itemDto = ItemDto.builder()
+                .name("")
+                .description("desc1")
+                .available(true)
+                .build();
+    }
 
-        @Test
-        void saveNewItem() throws Exception {
-            when(itemService.createItem(any(), any()))
-                    .thenReturn(itemDto);
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("X-Sharer-User-Id", "1");
-            mvc.perform(post("/items")
-                            .content(mapper.writeValueAsString(itemDto))
-                            .headers(new HttpHeaders(params))
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.name", is(itemDto.getName()), String.class))
-                    .andExpect(jsonPath("$.description", is(itemDto.getDescription()), String.class));
-        }
+    @Test
+    void saveNewItem() throws Exception {
+        when(itemService.createItem(any(), any()))
+                .thenReturn(itemDto);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("X-Sharer-User-Id", "1");
+        mvc.perform(post("/items")
+                        .content(mapper.writeValueAsString(itemDto))
+                        .headers(new HttpHeaders(params))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(itemDto.getName()), String.class))
+                .andExpect(jsonPath("$.description", is(itemDto.getDescription()), String.class));
+    }
+
 }
