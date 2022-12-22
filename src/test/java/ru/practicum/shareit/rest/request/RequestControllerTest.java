@@ -38,6 +38,7 @@ public class RequestControllerTest {
     private MockMvc mvc;
 
     private ItemRequestDto itemRequestDto;
+    private MultiValueMap<String, String> headers;
 
     @BeforeEach
     void setUp() {
@@ -49,17 +50,17 @@ public class RequestControllerTest {
                 .id(1L)
                 .description("desc")
                 .build();
+        headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
     }
 
     @Test
     void testCreateRequest() throws Exception {
         when(itemRequestService.createItemRequest(any(), anyLong()))
                 .thenReturn(itemRequestDto);
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(post("/requests")
                         .content(mapper.writeValueAsString(itemRequestDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -72,11 +73,9 @@ public class RequestControllerTest {
     void testGetRequest() throws Exception {
         when(itemRequestService.getItemRequest(any(), anyLong()))
                 .thenReturn(itemRequestDto);
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(get("/requests/1")
                         .content(mapper.writeValueAsString(itemRequestDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

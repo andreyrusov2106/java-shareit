@@ -1,6 +1,7 @@
 package ru.practicum.shareit.unit.request;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,22 +22,26 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class ItemRequestServiceTest {
     @Mock
-    ItemRequestRepository itemRequestRepository;
+    private ItemRequestRepository itemRequestRepository;
     @Mock
-    Validator<ItemRequestDto> itemDtoValidator;
+    private Validator<ItemRequestDto> itemDtoValidator;
     @Mock
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
+    private ItemRequestService itemRequestService;
 
-    @Test
-    public void testCreateItemRequestWrongOwner() {
-        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
+    @BeforeEach
+    void setUp() {
+        itemRequestService = new ItemRequestServiceImpl(
                 itemRequestRepository,
                 userRepository,
                 itemRepository,
                 itemDtoValidator);
+    }
 
+    @Test
+    public void testCreateItemRequestWrongOwner() {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder().build();
 
         Mockito
@@ -54,11 +59,6 @@ public class ItemRequestServiceTest {
 
     @Test
     public void testGetItemRequestWrongOwner() {
-        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
-                itemRequestRepository,
-                userRepository,
-                itemRepository,
-                itemDtoValidator);
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());
@@ -74,12 +74,6 @@ public class ItemRequestServiceTest {
 
     @Test
     public void testGetItemRequestWrongId() {
-        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
-                itemRequestRepository,
-                userRepository,
-                itemRepository,
-                itemDtoValidator);
-
         User u = new User(1L, "User1", "iuser1@mail.ru");
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
@@ -96,11 +90,6 @@ public class ItemRequestServiceTest {
 
     @Test
     public void testGetAllItemRequestWrongId() {
-        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
-                itemRequestRepository,
-                userRepository,
-                itemRepository,
-                itemDtoValidator);
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());
@@ -113,11 +102,6 @@ public class ItemRequestServiceTest {
 
     @Test
     public void testGetAllItemRequestWithPaginationWrongId() {
-        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
-                itemRequestRepository,
-                userRepository,
-                itemRepository,
-                itemDtoValidator);
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());

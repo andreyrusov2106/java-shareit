@@ -40,6 +40,8 @@ public class ItemControllerTest {
     private MockMvc mvc;
 
     private ItemDto itemDto;
+    private MultiValueMap<String, String> params;
+    private MultiValueMap<String, String> headers;
 
     @BeforeEach
     void setUp() {
@@ -51,17 +53,19 @@ public class ItemControllerTest {
                 .description("desc1")
                 .available(true)
                 .build();
+        headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
+        params = new LinkedMultiValueMap<>();
+        params.add("text", "text");
     }
 
     @Test
     void testCreateItem() throws Exception {
         when(itemService.createItem(any(), any()))
                 .thenReturn(itemDto);
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(post("/items")
                         .content(mapper.writeValueAsString(itemDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -72,11 +76,9 @@ public class ItemControllerTest {
 
     @Test
     void testUpdateItem() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(patch("/items/1")
                         .content(mapper.writeValueAsString(itemDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -87,10 +89,8 @@ public class ItemControllerTest {
     void testGetItem() throws Exception {
         when(itemService.getItem(any(), any()))
                 .thenReturn(itemDto);
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(get("/items/1")
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -101,11 +101,9 @@ public class ItemControllerTest {
 
     @Test
     void testDeleteItem() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(delete("/items/1")
                         .content(mapper.writeValueAsString(itemDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -114,11 +112,9 @@ public class ItemControllerTest {
 
     @Test
     void testGetAll() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(get("/items")
                         .content(mapper.writeValueAsString(itemDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

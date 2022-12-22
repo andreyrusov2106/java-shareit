@@ -88,7 +88,7 @@ public class UserServiceImplTest {
     @Test
     void test6CreateUserWrongEmail() {
         UserDto userDto = UserDto.builder().email("").name("User1").build();
-        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+        ItemRequestDto.builder()
                 .description("").build();
         final ConstraintViolationException exception = Assertions.assertThrows(
                 ConstraintViolationException.class,

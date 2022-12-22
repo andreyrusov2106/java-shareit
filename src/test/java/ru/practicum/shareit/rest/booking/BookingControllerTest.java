@@ -45,6 +45,8 @@ public class BookingControllerTest {
     private MockMvc mvc;
 
     private BookingDto bookingDto;
+    private MultiValueMap<String, String> headers;
+    private MultiValueMap<String, String> params;
 
     @BeforeEach
     void setUp() {
@@ -56,17 +58,19 @@ public class BookingControllerTest {
                 .start(LocalDateTime.now())
                 .end(LocalDateTime.now())
                 .build();
+        headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
+        params = new LinkedMultiValueMap<>();
+        params.add("approved", "true");
     }
 
     @Test
     void testCreateBooking() throws Exception {
         when(bookingService.createBooking(any(), any()))
                 .thenReturn(bookingDto);
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("X-Sharer-User-Id", "1");
         mvc.perform(post("/bookings")
                         .content(mapper.writeValueAsString(bookingDto))
-                        .headers(new HttpHeaders(params))
+                        .headers(new HttpHeaders(headers))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -92,8 +96,6 @@ public class BookingControllerTest {
 
     @Test
     void testGetAllBooking() throws Exception {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("X-Sharer-User-Id", "1");
         mvc.perform(get("/bookings")
                         .content(mapper.writeValueAsString(bookingDto))
                         .headers(new HttpHeaders(headers))
@@ -105,8 +107,6 @@ public class BookingControllerTest {
 
     @Test
     void testGetBooking() throws Exception {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("X-Sharer-User-Id", "1");
         mvc.perform(get("/bookings/1")
                         .content(mapper.writeValueAsString(bookingDto))
                         .headers(new HttpHeaders(headers))
@@ -118,8 +118,6 @@ public class BookingControllerTest {
 
     @Test
     void testGetAllBookingByOwner() throws Exception {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("X-Sharer-User-Id", "1");
         mvc.perform(get("/bookings/owner")
                         .content(mapper.writeValueAsString(bookingDto))
                         .headers(new HttpHeaders(headers))

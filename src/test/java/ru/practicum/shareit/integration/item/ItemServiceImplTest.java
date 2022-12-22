@@ -44,7 +44,7 @@ public class ItemServiceImplTest {
     @Test
     void test1SaveItem() {
         UserDto userDto = UserDto.builder().id(1L).email("user1@mail.ru").name("User1").build();
-        UserDto user1 = userService.createUser(userDto);
+        userService.createUser(userDto);
         ItemDto itemDto = ItemDto.builder().description("Item1desc").name("Item1").available(true).build();
         ItemDto item = itemService.createItem(itemDto, 1L);
         assertThat(item.getId(), notNullValue());
@@ -102,7 +102,7 @@ public class ItemServiceImplTest {
     @Test
     void test6DeleteItem() {
         ItemDto itemDto = ItemDto.builder().description("Item2desc").name("Item2").available(true).build();
-        ItemDto item = itemService.createItem(itemDto, 2L);
+        itemService.createItem(itemDto, 2L);
         itemService.removeItem(2L);
         List<ItemDto> items = itemService.getAllItemsByUserId(2L);
         assertThat(items.size(), equalTo(0));
@@ -110,7 +110,6 @@ public class ItemServiceImplTest {
 
     @Test
     void test7GetWrongItem() {
-
         final ResourceNotFoundException exception = Assertions.assertThrows(
                 ResourceNotFoundException.class,
                 () -> itemService.getItem(99L, 1L));

@@ -63,16 +63,16 @@ public class BookingServiceImplTest {
                 .end(end)
                 .item(item1)
                 .build();
-        BookingDto bookingDtonew = bookingService.createBooking(bookingDto, 2L);
-        assertThat(bookingDtonew.getId(), notNullValue());
-        assertThat(bookingDtonew.getStart(), equalTo(bookingDto.getStart()));
-        assertThat(bookingDtonew.getEnd(), equalTo(bookingDto.getEnd()));
-        assertThat(bookingDtonew.getBooker(), equalTo(bookingDto.getBooker()));
-        assertThat(bookingDtonew.getItem(), equalTo(bookingDto.getItem()));
+        BookingDto bookingDtoNew = bookingService.createBooking(bookingDto, 2L);
+        assertThat(bookingDtoNew.getId(), notNullValue());
+        assertThat(bookingDtoNew.getStart(), equalTo(bookingDto.getStart()));
+        assertThat(bookingDtoNew.getEnd(), equalTo(bookingDto.getEnd()));
+        assertThat(bookingDtoNew.getBooker(), equalTo(bookingDto.getBooker()));
+        assertThat(bookingDtoNew.getItem(), equalTo(bookingDto.getItem()));
     }
 
     @Test
-    void test212CreateBookingFail1() {
+    void test2CreateBookingFail1() {
         UserDto ownerDto = UserDto.builder().email("user3@mail.ru").name("User3").build();
         UserDto owner = userService.createUser(ownerDto);
         User userOwner = new User();

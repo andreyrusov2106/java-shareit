@@ -1,6 +1,7 @@
 package ru.practicum.shareit.unit.booking;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.booking.validator.BookingDtoValidator;
 import ru.practicum.shareit.exceptions.BadRequestException;
@@ -38,16 +40,19 @@ public class BookingServiceTest {
     UserRepository userRepository;
     @Mock
     BookingDtoValidator bookingDtoValidator;
-    BookingServiceImpl bookingService;
+    BookingService bookingService;
 
-
-    @Test
-    public void testCreateBooking() {
+    @BeforeEach
+    void setUp() {
         bookingService = new BookingServiceImpl(
                 itemRepository,
                 userRepository,
                 bookingRepository,
                 bookingDtoValidator);
+    }
+
+    @Test
+    public void testCreateBooking() {
         LocalDateTime start = LocalDateTime.now().plusSeconds(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
         ItemDto itemDto = ItemDto.builder().id(1L).description("Item5desc").name("Item5").available(true).build();
@@ -76,11 +81,6 @@ public class BookingServiceTest {
 
     @Test
     public void testUpdateBookingWrongOwner() {
-        bookingService = new BookingServiceImpl(
-                itemRepository,
-                userRepository,
-                bookingRepository,
-                bookingDtoValidator);
         LocalDateTime start = LocalDateTime.now().plusSeconds(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
         UserDto bookerDto = UserDto.builder().id(3L).email("user4@mail.ru").name("User4").build();
@@ -115,11 +115,6 @@ public class BookingServiceTest {
 
     @Test
     public void testUpdateBookingWrongStatus() {
-        bookingService = new BookingServiceImpl(
-                itemRepository,
-                userRepository,
-                bookingRepository,
-                bookingDtoValidator);
         LocalDateTime start = LocalDateTime.now().plusSeconds(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
         UserDto bookerDto = UserDto.builder().id(3L).email("user4@mail.ru").name("User4").build();
@@ -155,11 +150,6 @@ public class BookingServiceTest {
 
     @Test
     public void testAllBookingsByState() {
-        bookingService = new BookingServiceImpl(
-                itemRepository,
-                userRepository,
-                bookingRepository,
-                bookingDtoValidator);
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class,
                 () -> bookingService.getAllBookingsByState(1L, "fdsfds", -1, 0));
@@ -169,11 +159,6 @@ public class BookingServiceTest {
 
     @Test
     public void testAllBookingsByStateWrongUser() {
-        bookingService = new BookingServiceImpl(
-                itemRepository,
-                userRepository,
-                bookingRepository,
-                bookingDtoValidator);
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());
@@ -187,11 +172,6 @@ public class BookingServiceTest {
 
     @Test
     public void getAllBookingsByStateAndOwnerWrongUser() {
-        bookingService = new BookingServiceImpl(
-                itemRepository,
-                userRepository,
-                bookingRepository,
-                bookingDtoValidator);
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.empty());

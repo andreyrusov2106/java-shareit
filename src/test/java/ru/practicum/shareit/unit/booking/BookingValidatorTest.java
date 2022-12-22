@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 public class BookingValidatorTest {
 
-    static BookingDtoValidator bookingDtoValidator;
+    private static BookingDtoValidator bookingDtoValidator;
 
     @BeforeAll
     public static void beforeAll() {

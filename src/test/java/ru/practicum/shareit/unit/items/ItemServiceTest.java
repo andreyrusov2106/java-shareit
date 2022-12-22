@@ -1,6 +1,7 @@
 package ru.practicum.shareit.unit.items;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -26,24 +27,24 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Mock
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Mock
-    BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
     @Mock
-    ItemRequestRepository itemRequestRepository;
+    private ItemRequestRepository itemRequestRepository;
     @Mock
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
     @Mock
-    ItemValidator itemValidator;
+    private ItemValidator itemValidator;
     @Mock
-    CommentValidator commentValidator;
+    private CommentValidator commentValidator;
+    private ItemService itemService;
 
-    @Test
-    public void testCreateUItem() {
-
-        ItemService itemService = new ItemServiceImpl(
+    @BeforeEach
+    void setUp() {
+        itemService = new ItemServiceImpl(
                 itemRepository,
                 itemRequestRepository,
                 userRepository,
@@ -51,6 +52,10 @@ public class ItemServiceTest {
                 commentRepository,
                 itemValidator,
                 commentValidator);
+    }
+
+    @Test
+    public void testCreateUItem() {
         ItemDto itemDto = ItemDto.builder().build();
         Mockito
                 .when(userRepository.findById(Mockito.anyLong()))
@@ -65,15 +70,6 @@ public class ItemServiceTest {
 
     @Test
     public void testUpdateItem() {
-
-        ItemService itemService = new ItemServiceImpl(
-                itemRepository,
-                itemRequestRepository,
-                userRepository,
-                bookingRepository,
-                commentRepository,
-                itemValidator,
-                commentValidator);
         ItemDto itemDto = ItemDto.builder().build();
         Item i = new Item();
         ItemMapper.toItem(i, itemDto);
