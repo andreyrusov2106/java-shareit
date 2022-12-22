@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -70,6 +71,19 @@ public class ItemControllerTest {
     }
 
     @Test
+    void testUpdateItem() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("X-Sharer-User-Id", "1");
+        mvc.perform(patch("/items/1")
+                        .content(mapper.writeValueAsString(itemDto))
+                        .headers(new HttpHeaders(params))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void testGetItem() throws Exception {
         when(itemService.getItem(any(), any()))
                 .thenReturn(itemDto);
@@ -92,6 +106,32 @@ public class ItemControllerTest {
         mvc.perform(delete("/items/1")
                         .content(mapper.writeValueAsString(itemDto))
                         .headers(new HttpHeaders(params))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetAll() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("X-Sharer-User-Id", "1");
+        mvc.perform(get("/items")
+                        .content(mapper.writeValueAsString(itemDto))
+                        .headers(new HttpHeaders(params))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSearch() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("text", "text");
+        mvc.perform(get("/items/search")
+                        .content(mapper.writeValueAsString(itemDto))
+                        .params(params)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

@@ -1,4 +1,5 @@
 package ru.practicum.shareit.rest.request;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ public class RequestControllerTest {
 
     @Test
     void testCreateRequest() throws Exception {
-        when(itemRequestService.createItemRequest(any(),anyLong()))
+        when(itemRequestService.createItemRequest(any(), anyLong()))
                 .thenReturn(itemRequestDto);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("X-Sharer-User-Id", "1");
@@ -69,7 +70,7 @@ public class RequestControllerTest {
 
     @Test
     void testGetRequest() throws Exception {
-        when(itemRequestService.getItemRequest(any(),anyLong()))
+        when(itemRequestService.getItemRequest(any(), anyLong()))
                 .thenReturn(itemRequestDto);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("X-Sharer-User-Id", "1");

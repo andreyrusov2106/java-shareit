@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,7 +59,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void saveNewBooking() throws Exception {
+    void testCreateBooking() throws Exception {
         when(bookingService.createBooking(any(), any()))
                 .thenReturn(bookingDto);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -70,5 +72,60 @@ public class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class));
+    }
+
+    @Test
+    void testUpdateBooking() throws Exception {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("approved", "true");
+        mvc.perform(patch("/bookings/1")
+                        .content(mapper.writeValueAsString(bookingDto))
+                        .headers(new HttpHeaders(headers))
+                        .params(params)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetAllBooking() throws Exception {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
+        mvc.perform(get("/bookings")
+                        .content(mapper.writeValueAsString(bookingDto))
+                        .headers(new HttpHeaders(headers))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetBooking() throws Exception {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
+        mvc.perform(get("/bookings/1")
+                        .content(mapper.writeValueAsString(bookingDto))
+                        .headers(new HttpHeaders(headers))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetAllBookingByOwner() throws Exception {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("X-Sharer-User-Id", "1");
+        mvc.perform(get("/bookings/owner")
+                        .content(mapper.writeValueAsString(bookingDto))
+                        .headers(new HttpHeaders(headers))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
