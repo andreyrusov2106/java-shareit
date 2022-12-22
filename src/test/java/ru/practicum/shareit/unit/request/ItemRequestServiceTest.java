@@ -93,4 +93,38 @@ public class ItemRequestServiceTest {
         Assertions.assertEquals("itemRequest with id not found100", exception.getMessage());
 
     }
+
+    @Test
+    public void testGetAllItemRequestWrongId() {
+        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
+                itemRequestRepository,
+                userRepository,
+                itemRepository,
+                itemDtoValidator);
+        Mockito
+                .when(userRepository.findById(Mockito.anyLong()))
+                .thenReturn(Optional.empty());
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> itemRequestService.getAllItemRequest(100L));
+        Assertions.assertEquals("User with id=100 not found", exception.getMessage());
+
+    }
+
+    @Test
+    public void testGetAllItemRequestWithPaginationWrongId() {
+        ItemRequestService itemRequestService = new ItemRequestServiceImpl(
+                itemRequestRepository,
+                userRepository,
+                itemRepository,
+                itemDtoValidator);
+        Mockito
+                .when(userRepository.findById(Mockito.anyLong()))
+                .thenReturn(Optional.empty());
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> itemRequestService.getAllItemRequestWithPagination(100L, 0, 2));
+
+        Assertions.assertEquals("User with id=100 not found", exception.getMessage());
+    }
 }
