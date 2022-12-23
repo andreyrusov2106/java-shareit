@@ -2,11 +2,8 @@ package ru.practicum.shareit.integration.item;
 
 import lombok.RequiredArgsConstructor;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -36,14 +33,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         properties = "db.name=test1",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ItemServiceImplTest {
     private final ItemService itemService;
     private final UserService userService;
     private final BookingService bookingService;
 
+    @Order(1)
     @Test
-    void test1SaveItem() {
+    void testSaveItem() {
         UserDto userDto = UserDto.builder().id(1L).email("user1@mail.ru").name("User1").build();
         userService.createUser(userDto);
         ItemDto itemDto = ItemDto.builder().description("Item1desc").name("Item1").available(true).build();
@@ -54,8 +52,9 @@ public class ItemServiceImplTest {
         assertThat(item.getAvailable(), equalTo(itemDto.getAvailable()));
     }
 
+    @Order(2)
     @Test
-    void test2UpdateItem() {
+    void testUpdateItem() {
         ItemDto itemDto = ItemDto.builder().description("Item1descNew").name("Item1New").available(true).build();
         ItemDto item = itemService.updateItem(itemDto, 1L, 1L);
         assertThat(item.getId(), notNullValue());
@@ -64,8 +63,9 @@ public class ItemServiceImplTest {
         assertThat(item.getAvailable(), equalTo(itemDto.getAvailable()));
     }
 
+    @Order(3)
     @Test
-    void test3GetItem() {
+    void testGetItem() {
         ItemDto itemDto = ItemDto.builder().description("Item1descNew").name("Item1New").available(true).build();
         ItemDto item = itemService.getItem(1L, 1L);
         assertThat(item.getId(), notNullValue());
@@ -74,14 +74,16 @@ public class ItemServiceImplTest {
         assertThat(item.getAvailable(), equalTo(itemDto.getAvailable()));
     }
 
+    @Order(4)
     @Test
-    void test4Search() {
+    void testSearch() {
         List<ItemDto> items = itemService.search("Item1");
         assertThat(items.size(), equalTo(1));
     }
 
+    @Order(5)
     @Test
-    void test5CreateComment() throws InterruptedException {
+    void testCreateComment() throws InterruptedException {
         UserDto userDto = UserDto.builder().email("user2@mail.ru").name("User2").build();
         UserDto user1 = userService.createUser(userDto);
         User user = new User();
@@ -100,8 +102,9 @@ public class ItemServiceImplTest {
         assertThat(item.getComments().size(), equalTo(1));
     }
 
+    @Order(6)
     @Test
-    void test6DeleteItem() {
+    void testDeleteItem() {
         ItemDto itemDto = ItemDto.builder().description("Item2desc").name("Item2").available(true).build();
         itemService.createItem(itemDto, 2L);
         itemService.removeItem(2L);
@@ -109,8 +112,9 @@ public class ItemServiceImplTest {
         assertTrue(items.isEmpty());
     }
 
+    @Order(7)
     @Test
-    void test7GetWrongItem() {
+    void testGetWrongItem() {
         final ResourceNotFoundException exception = Assertions.assertThrows(
                 ResourceNotFoundException.class,
                 () -> itemService.getItem(99L, 1L));

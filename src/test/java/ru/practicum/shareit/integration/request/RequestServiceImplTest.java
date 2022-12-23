@@ -1,17 +1,12 @@
 package ru.practicum.shareit.integration.request;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.ResourceNotFoundException;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -30,17 +25,16 @@ import static org.hamcrest.Matchers.notNullValue;
         properties = "db.name=test1",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RequestServiceImplTest {
-    private final ItemService itemService;
     private final UserService userService;
-    private final BookingService bookingService;
     private final ItemRequestService itemRequestService;
 
+    @Order(1)
     @Test
-    void test1CreateItemRequest() {
+    void testCreateItemRequest() {
         UserDto ownerDto = UserDto.builder().email("user1@mail.ru").name("User1").build();
-        UserDto owner = userService.createUser(ownerDto);
+        userService.createUser(ownerDto);
         ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .description("ItemRequest1").build();
         ItemRequestDto itemRequestDto1 = itemRequestService.createItemRequest(itemRequestDto, 1L);
@@ -48,31 +42,34 @@ public class RequestServiceImplTest {
         assertThat(itemRequestDto.getDescription(), equalTo(itemRequestDto1.getDescription()));
     }
 
-
+    @Order(2)
     @Test
-    void test2GetItemRequest() {
+    void testGetItemRequest() {
         ItemRequestDto itemRequestDto1 = itemRequestService.getItemRequest(1L, 1L);
         assertThat(itemRequestDto1.getId(), notNullValue());
         assertThat(itemRequestDto1.getDescription(), equalTo("ItemRequest1"));
 
     }
 
+    @Order(3)
     @Test
-    void test3GetAllItemRequest() {
+    void testGetAllItemRequest() {
         List<ItemRequestDto> itemRequestDtos = itemRequestService.getAllItemRequest(1L);
         assertThat(itemRequestDtos.size(), equalTo(1));
     }
 
+    @Order(4)
     @Test
-    void test4GetAllItemRequestPagination() {
+    void testGetAllItemRequestPaginationWithCorrectFromSize() {
         UserDto ownerDto = UserDto.builder().email("user2@mail.ru").name("User2").build();
-        UserDto owner = userService.createUser(ownerDto);
+        userService.createUser(ownerDto);
         List<ItemRequestDto> itemRequestDtos = itemRequestService.getAllItemRequestWithPagination(2L, 0, 1);
         assertThat(itemRequestDtos.size(), equalTo(1));
     }
 
+    @Order(5)
     @Test
-    void test5GetAllItemRequestPagination() {
+    void testGetAllItemRequestPaginationWithZeroSize() {
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class,
                 () -> itemRequestService.getAllItemRequestWithPagination(2L, 0, 0));
@@ -80,8 +77,9 @@ public class RequestServiceImplTest {
         Assertions.assertEquals("Incorrect size or from", exception.getMessage());
     }
 
+    @Order(6)
     @Test
-    void test6GetAllItemRequestPagination() {
+    void testGetAllItemRequestPaginationWithNegativeFrom() {
         final BadRequestException exception = Assertions.assertThrows(
                 BadRequestException.class,
                 () -> itemRequestService.getAllItemRequestWithPagination(2L, -1, 0));
@@ -89,8 +87,9 @@ public class RequestServiceImplTest {
         Assertions.assertEquals("Incorrect size or from", exception.getMessage());
     }
 
+    @Order(7)
     @Test
-    void test6CreateItemRequestWithWrongDescription() {
+    void testCreateItemRequestWithWrongDescription() {
 
         ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .description("").build();
@@ -101,8 +100,9 @@ public class RequestServiceImplTest {
         Assertions.assertEquals("check.t.description: must not be empty", exception.getMessage());
     }
 
+    @Order(8)
     @Test
-    void test7CreateItemRequestWithWrongUser() {
+    void testCreateItemRequestWithWrongUser() {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .description("fdfdsfsd").build();
         final ResourceNotFoundException exception = Assertions.assertThrows(

@@ -1,10 +1,7 @@
 package ru.practicum.shareit.integration.user;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,12 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         properties = "db.name=test1",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserServiceImplTest {
     private final UserService service;
 
+    @Order(1)
     @Test
-    void test1SaveUser() {
+    void testSaveUser() {
         UserDto userDto = UserDto.builder().id(1L).email("user1@mail.ru").name("User1").build();
         UserDto user = service.createUser(userDto);
         assertThat(user.getId(), notNullValue());
@@ -41,8 +39,9 @@ public class UserServiceImplTest {
         assertThat(user.getName(), equalTo(userDto.getName()));
     }
 
+    @Order(2)
     @Test
-    void test2UpdateUser() {
+    void testUpdateUser() {
         UserDto userDto2 = UserDto.builder().email("user1@mail.ru").name("User1New").build();
         UserDto user = service.updateUser(1L, userDto2);
         assertThat(user.getId(), notNullValue());
@@ -50,15 +49,17 @@ public class UserServiceImplTest {
         assertThat(user.getName(), equalTo(userDto2.getName()));
     }
 
+    @Order(3)
     @Test
-    void test3GetAllUsers() {
+    void testGetAllUsers() {
         List<UserDto> users = service.getAllUsers();
         assertThat(users.size(), equalTo(1));
 
     }
 
+    @Order(4)
     @Test
-    void test4GetUser() {
+    void testGetUser() {
         UserDto userDto2 = UserDto.builder().email("user1@mail.ru").name("User1New").build();
         UserDto user = service.getUser(1L);
         assertThat(user.getId(), notNullValue());
@@ -66,8 +67,9 @@ public class UserServiceImplTest {
         assertThat(user.getName(), equalTo(userDto2.getName()));
     }
 
+    @Order(5)
     @Test
-    void test5SaveUserWithDuplicateEmail() {
+    void testSaveUserWithDuplicateEmail() {
         UserDto userDto = UserDto.builder().email("user1@mail.ru").name("User1").build();
         final DataIntegrityViolationException exception = Assertions.assertThrows(
                 DataIntegrityViolationException.class,
@@ -79,15 +81,17 @@ public class UserServiceImplTest {
                 "could not execute statement", exception.getMessage());
     }
 
+    @Order(6)
     @Test
-    void test6RemoveUser() {
+    void testRemoveUser() {
         service.removeUser(1L);
         List<UserDto> users = service.getAllUsers();
         assertTrue(users.isEmpty());
     }
 
+    @Order(7)
     @Test
-    void test6CreateUserWrongEmail() {
+    void testCreateUserWrongEmail() {
         UserDto userDto = UserDto.builder().email("").name("User1").build();
         ItemRequestDto.builder()
                 .description("").build();
@@ -98,10 +102,11 @@ public class UserServiceImplTest {
         Assertions.assertEquals("check.t.email: must not be empty", exception.getMessage());
     }
 
+    @Order(8)
     @Test
-    void test7UpdateWrongUser() {
+    void testUpdateWrongUser() {
         UserDto userDto = UserDto.builder().email("").name("User1").build();
-        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+        ItemRequestDto.builder()
                 .description("").build();
         final ResourceNotFoundException exception = Assertions.assertThrows(
                 ResourceNotFoundException.class,
@@ -110,8 +115,9 @@ public class UserServiceImplTest {
         Assertions.assertEquals("User not found", exception.getMessage());
     }
 
+    @Order(9)
     @Test
-    void test8GetWrongUser() {
+    void testGetWrongUser() {
         final ResourceNotFoundException exception = Assertions.assertThrows(
                 ResourceNotFoundException.class,
                 () -> service.getUser(99L));
