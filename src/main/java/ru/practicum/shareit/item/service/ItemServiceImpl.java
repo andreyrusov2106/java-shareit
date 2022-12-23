@@ -55,9 +55,7 @@ public class ItemServiceImpl implements ItemService {
         }
         if (itemDto.getRequestId() != null) {
             var itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
-            if (!itemRequest.isEmpty()) {
-                newItem.setRequest(itemRequest.get());
-            }
+            itemRequest.ifPresent(newItem::setRequest);
         }
         Item createdItem = itemRepository.save(newItem);
         log.info("Item created" + createdItem);

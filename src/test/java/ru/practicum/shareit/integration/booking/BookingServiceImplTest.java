@@ -1,10 +1,7 @@
 package ru.practicum.shareit.integration.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,25 +21,26 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @SpringBootTest(
         properties = "db.name=test1",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BookingServiceImplTest {
     private final ItemService itemService;
     private final UserService userService;
     private final BookingService bookingService;
 
+    @Order(1)
     @Test
-    void test1CreateBooking() {
+    void testCreateBooking() {
         UserDto ownerDto = UserDto.builder().email("user1@mail.ru").name("User1").build();
         UserDto owner = userService.createUser(ownerDto);
         User userOwner = new User();
@@ -71,8 +69,9 @@ public class BookingServiceImplTest {
         assertThat(bookingDtoNew.getItem(), equalTo(bookingDto.getItem()));
     }
 
+    @Order(2)
     @Test
-    void test2CreateBookingFail1() {
+    void testCreateBookingFailUser() {
         UserDto ownerDto = UserDto.builder().email("user3@mail.ru").name("User3").build();
         UserDto owner = userService.createUser(ownerDto);
         User userOwner = new User();
@@ -96,112 +95,127 @@ public class BookingServiceImplTest {
                 .build();
         final ResourceNotFoundException exception = Assertions.assertThrows(
                 ResourceNotFoundException.class,
-                () ->  bookingService.createBooking(bookingDto, 100L));
+                () -> bookingService.createBooking(bookingDto, 100L));
 
         Assertions.assertEquals("User with id=100 not found", exception.getMessage());
     }
 
+    @Order(3)
     @Test
-    void test2GetBooking() {
+    void testGetBooking() {
         BookingDto bookingDto = bookingService.getBooking(1L, 1L);
         assertThat(bookingDto.getItem().getId(), equalTo(1L));
         assertThat(bookingDto.getBooker().getId(), equalTo(2L));
 
     }
 
-
+    @Order(4)
     @Test
-    void test21GetBookingFail2() {
+    void testGetBookingFailBooking() {
         final ResourceNotFoundException exception = Assertions.assertThrows(
                 ResourceNotFoundException.class,
-                () ->  bookingService.getBooking(2L, 1L));
+                () -> bookingService.getBooking(2L, 1L));
 
         Assertions.assertEquals("Booking with id not found2", exception.getMessage());
     }
 
+    @Order(5)
     @Test
-    void test3UpdateBooking() {
+    void testUpdateBooking() {
         BookingDto bookingDto = bookingService.updateBooking(1L, 1L, true);
         assertThat(bookingDto.getStatus(), equalTo(Status.APPROVED));
     }
 
+    @Order(6)
     @Test
-    void test3UpdateBookingFail() {
-        final NoSuchElementException exception = Assertions.assertThrows(
-                NoSuchElementException.class,
-                () ->  bookingService.updateBooking(2L, 1L, true));
+    void testUpdateBookingFail() {
+        final ResourceNotFoundException exception = Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> bookingService.updateBooking(2L, 1L, true));
 
-        Assertions.assertEquals("No value present", exception.getMessage());
+        Assertions.assertEquals("Booking not found", exception.getMessage());
     }
 
+    @Order(7)
     @Test
-    void test4getAllBookingsByState() {
+    void testgetAllBookingsByState() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.ALL.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(1));
     }
 
+    @Order(8)
     @Test
-    void test5getPastBookingsByStatePast() {
+    void testgetPastBookingsByStatePast() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.PAST.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(9)
     @Test
-    void test6getPastBookingsByStateCurrent() {
+    void testgetPastBookingsByStateCurrent() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.CURRENT.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(10)
     @Test
-    void test7getPastBookingsByStateRejected() {
+    void testgetPastBookingsByStateRejected() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.REJECTED.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(11)
     @Test
-    void test8getPastBookingsByStateWaiting() {
+    void testGetPastBookingsByStateWaiting() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.WAITING.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(12)
     @Test
-    void test8getPastBookingsByStateFuture() {
+    void testGetPastBookingsByStateFuture() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByState(2L, State.FUTURE.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(1));
     }
 
+    @Order(13)
     @Test
-    void test9getAllBookingsByStateAndOwner() {
+    void testGetAllBookingsByStateAndOwner() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.ALL.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(1));
     }
 
+    @Order(14)
     @Test
-    void test91getPastBookingsByStateAndOwnerPast() {
+    void testGetPastBookingsByStateAndOwnerPast() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.PAST.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(15)
     @Test
-    void test92getPastBookingsByStateAndOwnerCurrent() {
+    void testGetPastBookingsByStateAndOwnerCurrent() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.CURRENT.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(16)
     @Test
-    void test93getPastBookingsByStateAndOwnerWaiting() {
+    void testGetPastBookingsByStateAndOwnerWaiting() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.WAITING.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(17)
     @Test
-    void test94getPastBookingsByStateAndOwnerRejected() {
+    void testGetPastBookingsByStateAndOwnerRejected() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.REJECTED.name(), 0, 1);
-        assertThat(bookingDtos.size(), equalTo(0));
+        assertTrue(bookingDtos.isEmpty());
     }
 
+    @Order(18)
     @Test
-    void test95getPastBookingsByStateAndOwnerFuture() {
+    void testGetPastBookingsByStateAndOwnerFuture() {
         List<BookingDto> bookingDtos = bookingService.getAllBookingsByStateAndOwner(1L, State.FUTURE.name(), 0, 1);
         assertThat(bookingDtos.size(), equalTo(1));
     }

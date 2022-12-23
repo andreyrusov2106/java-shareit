@@ -20,6 +20,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -82,7 +83,7 @@ public class UserServiceImplTest {
     void test6RemoveUser() {
         service.removeUser(1L);
         List<UserDto> users = service.getAllUsers();
-        assertThat(users.size(), equalTo(0));
+        assertTrue(users.isEmpty());
     }
 
     @Test

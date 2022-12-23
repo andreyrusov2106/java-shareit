@@ -2,9 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -84,7 +82,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto updateBooking(Long bookingId, Long userId, Boolean approved) {
         Booking updatedBooking;
-        Booking booking = new Booking(bookingRepository.findById(bookingId).get());
+        Booking booking = new Booking(bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found")));
         if (!Objects.equals(booking.getItem().getOwner().getId(), userId)) {
             throw new ResourceNotFoundException("User is not owner of item!");
         }
@@ -154,7 +153,8 @@ public class BookingServiceImpl implements BookingService {
 
     private List<BookingDto> stateToRepositoryAndOwner(User owner, State state, Pageable pageable) {
         LocalDateTime now = LocalDateTime.now();
-        List<Booking> result = new ArrayList<>();
+        List<Booking> resultList = new ArrayList<>();
+        Page<Booking> result = new PageImpl<>(resultList);
         switch (state) {
             case ALL:
                 result = bookingRepository.findAllByOwnerOfItem(owner.getId(), pageable);
@@ -182,7 +182,8 @@ public class BookingServiceImpl implements BookingService {
 
     private List<BookingDto> stateToRepository(User owner, State state, Pageable pageable) {
         LocalDateTime now = LocalDateTime.now();
-        List<Booking> result = new ArrayList<>();
+        List<Booking> resultList = new ArrayList<>();
+        Page<Booking> result = new PageImpl<>(resultList);
         switch (state) {
             case ALL:
                 result = bookingRepository.findBookingsByBooker(owner, pageable);
