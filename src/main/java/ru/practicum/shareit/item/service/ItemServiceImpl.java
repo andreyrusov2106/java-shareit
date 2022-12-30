@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.validator.Validator;
 
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+
+    private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
 
     private final BookingRepository bookingRepository;
@@ -49,6 +52,10 @@ public class ItemServiceImpl implements ItemService {
             throw new ResourceNotFoundException(String.format("User with id=%d not found", userId));
         } else {
             newItem.setOwner(owner.get());
+        }
+        if (itemDto.getRequestId() != null) {
+            var itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+            itemRequest.ifPresent(newItem::setRequest);
         }
         Item createdItem = itemRepository.save(newItem);
         log.info("Item created" + createdItem);
