@@ -28,15 +28,11 @@ public class ItemDtoCreate {
     @NonFinal
     Boolean available;
     @NonFinal
-    @Setter
     BookingResponseDto lastBooking;
     @NonFinal
-    @Setter
     BookingResponseDto nextBooking;
     @NonFinal
-    @Setter
     List<CommentDto> comments;
     @NonFinal
-    @Setter
     Long requestId;
 }

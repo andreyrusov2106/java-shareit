@@ -25,7 +25,6 @@ public class ItemRequestDto {
     @NonFinal
     LocalDateTime created;
     @NonFinal
-    @Setter
     List<ItemRequestDto> items;
 
 

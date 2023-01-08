@@ -19,6 +19,5 @@ public class ItemDtoUpdate {
     @NonFinal
     Boolean available;
     @NonFinal
-    @Setter
     Long requestId;
 }
