@@ -18,3 +18,7 @@ Template repository for Shareit project.
 ## Технологический стек:
 
 Java, Spring, Hibernate,  PostgreSQL, Lombok,docker
+
+Проект является практической работой по курсу Яндекс.Практикум.Java-разработчик.
+
+Проект подготовлен Русовым Андреем (rusov2106@mail.ru)
