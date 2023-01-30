@@ -1,5 +1,5 @@
 # java-shareit
-Template repository for Shareit project.
+Сервис по аренде вещей
 
 ## Описание проекта:
 
